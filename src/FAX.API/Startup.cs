@@ -41,7 +41,7 @@ namespace FAX.API
         /// <param name="services"></param>
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            //services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
             services.AddMvc().AddJsonOptions(options =>
             {
                 options.SerializerSettings.ContractResolver = new DefaultContractResolver();
@@ -76,21 +76,39 @@ namespace FAX.API
         /// </summary>
         /// <param name="app"></param>
         /// <param name="env"></param>
+        /// <param name="loggerFactory"></param>
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env,ILoggerFactory loggerFactory)
         {
+            loggerFactory.AddConsole(Configuration.GetSection("Logging"));
+            loggerFactory.AddDebug();
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
+            else
+            {
+                app.UseExceptionHandler("/Home/Error");
+            }
+
+
+            //app.UseStaticFiles();
 
             app.UseMvc();
-            app.UseSwagger();
 
+            //app.UseMvc(routes =>
+            //{
+            //    routes.MapRoute(
+            //       name: "default",
+            //       template: "api/{controller}/{action}",
+            //       defaults: new { controller = "Home", action = "Index" });
+            //});
+
+            app.UseSwagger();
             app.UseSwaggerUI(c =>
             {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
-                c.RoutePrefix = string.Empty;
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "MsSystem API V1");
             });
         }
     }
