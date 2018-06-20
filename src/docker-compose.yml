@@ -1,0 +1,8 @@
+version: '3.4'
+
+services:
+  fax.api:
+    image: ${DOCKER_REGISTRY}faxapi
+    build:
+      context: .
+      dockerfile: FAX.API/Dockerfile
